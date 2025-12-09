@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Profile</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Portrait (Mobile) Layout - 16:8 ratio */
+        @media (orientation: portrait) {
+            .grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-gap: 15px;
+                padding: 15px;
+            }
+            
+            .logo-container {
+                grid-column: 1 / span 2;
+                text-align: center;
+                margin-bottom: 15px;
+            }
+            
+            .profile-container {
+                grid-column: 1;
+                text-align: center;
+            }
+            
+            .info-container {
+                grid-column: 2;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+            
+            .marquee-container {
+                grid-column: 1 / span 2;
+                margin: 15px 0;
+            }
+
+            .points-container {
+                grid-column: 1 / span 2;
+                display: flex;
+                justify-content: space-between;
+                margin: 15px 0;
+            }
+
+            .point-box {
+                width: 48%;
+                text-align: center;
+            }
+            
+            .buttons-container {
+                grid-column: 1 / span 2;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-gap: 15px;
+            }
+        }
+
+        /* Landscape Layout */
+        @media (orientation: landscape) {
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(16, 1fr);
+                grid-template-rows: repeat(10, 1fr);
+                grid-gap: 10px;
+                height: 90vh;
+                padding: 20px;
+            }
+
+            .profile-container {
+                grid-column: 1 / span 3;
+                grid-row: 1;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .info-container {
+                grid-column: 4 / span 4;
+                grid-row: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding-left: 20px;
+            }
+
+            .logo-container {
+                grid-column: 8 / span 2;
+                grid-row: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .points-container {
+                grid-column: 11 / span 6;
+                grid-row: 1;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .total-point, .remaining-point {
+                width: 100%;
+            }
+
+            .marquee-container {
+                grid-column: 1 / span 16;
+                grid-row: 2;
+                margin: 10px 0;
+            }
+
+            .buttons-container {
+                grid-column: 1 / span 16;
+                grid-row: 3 / span 8;
+                display: grid;
+                grid-template-columns: repeat(8, 1fr);
+                grid-template-rows: repeat(4, 1fr);
+                grid-gap: 15px;
+            }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            object-fit: cover;
+            margin: 0 auto 15px;
+        }
+
+        .name {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .department, .position {
+            font-size: 1.2em;
+            color: #7f8c8d;
+            margin: 5px 0;
+        }
+
+        .marquee {
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 30s linear infinite;
+            padding-left: 100%;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .point-card {
+            text-align: center;
+            padding: 25px 15px;
+        }
+
+        .point-label {
+            font-size: 1.1em;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        .point-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.6);
+        }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            font-size: 1.5em;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loading" class="loading">Loading...</div>
+
+    <div class="container">
+        <div class="grid">
+
+            <!-- Logo -->
+            <div class="logo-container card">
+                <img src="" class="logo">
+            </div>
+
+            <!-- Profile -->
+            <div class="profile-container card">
+                <img src="" class="profile-pic">
+            </div>
+
+            <!-- Info -->
+            <div class="info-container card">
+                <div class="name" id="employeeNameDisplay">Edika</div>
+                <div class="department">Department: Production</div>
+                <div class="position">Position: Assistant Supervisor</div>
+            </div>
+
+            <!-- Marquee -->
+            <div class="marquee-container">
+                <div class="marquee card">
+                    <div class="marquee-content">
+                        🎉 Announcement: Monthly Point System Update - New rewards added!
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total & Remaining -->
+            <div class="points-container">
+                <div class="point-card card total-point point-box">
+                    <div class="point-label"><div>Total</div><div>Point</div></div>
+                    <div class="point-value" id="totalPoint">0</div>
+                </div>
+
+                <div class="point-card card remaining-point point-box">
+                    <div class="point-label"><div>Remaining</div><div>Point</div></div>
+                    <div class="point-value" id="remainingPoint">0</div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="buttons-container">
+                <button class="button" onclick="viewRanking()">View Ranking</button>
+
+                <!-- Redeem Reward 加上 user=Edika -->
+                <button class="button"
+                    onclick="window.location.href='https://hl-steel-industries-sdn-bhd.github.io/Redeem-html-test9/?user=Edika'">
+                    Redeem Reward
+                </button>
+
+                <button class="button" onclick="window.open('https://hl-steel-industries-sdn-bhd.github.io/Off-Site-Work-Record/', '_blank')">Off-site Work Record</button>
+                <button class="button" onclick="submitContribution()">Submit Contribution</button>
+                <button class="button" onclick="viewSchedule()">Work Schedule</button>
+                <button class="button" onclick="submitQC()">Submit QC Report</button>
+                <button class="button" onclick="viewBounty()">Bounty Task</button>
+                <button class="button" onclick="editProfile()">Edit Profile</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const CONFIG = {
+            employeeName: "Edika",
+            sheetID: "1nnjHKRP5mfutcX0DCnGBzFQOw78dX5MbkknZio_hRQc",
+            tabName: "Remaining Point",
+            gasURL: "https://script.google.com/macros/s/AKfycbzqsiU5z_rt7DtIZ6xfwJ72YU-m1RR3F325HH5yVLnL6hCxH046vMOvmV3-xIPJxCEdyQ/exec"  // <<--- 你部署 GAS 后记得填这里
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("employeeNameDisplay").textContent = CONFIG.employeeName;
+
+            loadPointsFromGAS();
+
+            setTimeout(() => {
+                document.getElementById("loading").style.display = "none";
+            }, 800);
+        });
+
+        async function loadPointsFromGAS() {
+            try {
+
+                const url =
+                    `${CONFIG.gasURL}?name=${encodeURIComponent(CONFIG.employeeName)}`
+                    + `&sheet=${CONFIG.sheetID}`
+                    + `&tab=${encodeURIComponent(CONFIG.tabName)}`;
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                document.getElementById("totalPoint").textContent = data.totalPoint.toLocaleString();
+                document.getElementById("remainingPoint").textContent = data.remainingPoint.toLocaleString();
+
+            } catch (err) {
+                console.error(err);
+                alert("⚠️ Failed to load points from server.");
+            }
+        }
+
+        function viewRanking() { alert("Coming soon"); }
+        function submitContribution() { alert("Coming soon"); }
+        function viewSchedule() { alert("Coming soon"); }
+        function submitQC() { alert("Coming soon"); }
+        function viewBounty() { alert("Coming soon"); }
+        function editProfile() { alert("Coming soon"); }
+    </script>
+</body>
+</html>
